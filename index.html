@@ -1,0 +1,121 @@
+<html>
+
+	<head>
+		<meta charset='utf-8'></meta>
+		<title>VoTwitch</title>
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+		<script src="./tapic.min.js"></script>
+		<script src="./util.js"></script>
+	</head>
+
+	<body>
+		<div class="container d-flex h-100 align-self-center justify-content-center text-center">
+		
+
+			<div id="content" class="row justify-content-center align-self-center">
+				<form id="requestForm" action="#">
+					<div class="form-group">
+						<input class='form-control' id="cid" name="channel" placeholder="twitch.tv/">
+					</div>
+					<button id="submitButton" type="submit" class="w-100 btn btn-primary">Ver votação</button>
+				</form>
+			</div>
+		</div>
+		
+		<script>
+					
+			document.getElementById("submitButton").addEventListener("click", (event)=>{
+				event.preventDefault();
+				
+				let channelInput = document.getElementById("cid");
+				channel = channelInput.value;;
+				if(channel != "") {
+					document.getElementById("requestForm").outerHTML = "<table id='votesTable'></table>";
+					let content = document.getElementById('content');
+					
+					let d = document.createElement('div');
+					d.className = 'ml-5';
+					d.innerHTML = `<p class="text-primary"><a href="//twitch.tv/${channel}">twitch.tv/${channel}</a></p><br><button class="btn btn-primary" onclick="resetVotes();">Reset</button>`;
+					content.appendChild(d);
+					main();
+				};
+			});
+			
+			var channel = null;	
+			var votes = [];
+			championList.forEach((champion, i)=> {
+				votes[i] = [champion, 0];
+			});
+			
+			function addVote(champion) {
+				votes.forEach((v, i)=> {
+					if(votes[i][0] == champion){
+						votes[i][1]++;
+					}
+				});		
+
+				votes.sort((a, b)=>{
+					return a[1]-b[1];
+				});			
+
+				render();
+			}
+			
+			function resetVotes() {
+				votes.forEach((v, i)=> {
+					votes[i][1] = 0;
+					render();
+				});	
+			}
+			
+			function main() {
+				const oauth = findHashParameter('access_token');
+				TAPIC.setup(oauth, (username)=>{
+					TAPIC.joinChannel(channel);
+				});
+				
+				
+				TAPIC.listen('message', (e) => {
+					var champ = getChampion(e.text);
+					if(champ != null){
+						addVote(champ);
+					}
+				});
+			};
+			
+			function render() {
+				let votesT = document.getElementById("votesTable");
+				
+				votesT.innerHTML = "";
+				
+				votes.forEach((v, i)=> {
+					if(v[1] > 0){
+						
+						let row = votesT.insertRow(0);
+						let cell2 = row.insertCell(0);
+						let cell1 = row.insertCell(0);
+						
+						
+						let imgUrl = getChampionImageURL(v[0]);
+						
+						let img = document.createElement('img');
+						img.width = 32;
+						img.height = 32;
+						img.src = imgUrl;
+						
+						cell1.appendChild(img);
+						
+						cell2.innerHTML = v[1];
+						
+					}
+				});		
+			};
+			
+		</script>
+	</body>
+
+</html>
