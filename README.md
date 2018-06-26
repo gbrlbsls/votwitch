@@ -1,5 +1,5 @@
 # votwitch
-Twitch.tv votes for league of legends champions based on chat
+Twitch.tv league champion votes based o chat activity.
 
 Use it <a href="//gbsales.github.io/votwitch">here</a>
 
