@@ -43,7 +43,13 @@
 					
 					let d = document.createElement('div');
 					d.className = 'ml-5';
-					d.innerHTML = `<p class="text-primary"><a href="//twitch.tv/${channel}">twitch.tv/${channel}</a></p><br><button class="btn btn-primary" onclick="resetVotes();">Reset</button><br><a class="btn btn-primary" href="${location.origin}${location.pathname}">Change streamer</a>`;
+					d.innerHTML = `
+					<p class="text-primary"><a href="//twitch.tv/${channel}">twitch.tv/${channel}</a></p>
+					<br>
+					<button class="btn btn-primary" onclick="resetVotes();">Reset</button>
+					<br>
+					<button class="btn btn-primary" onclick="window.location = '${location.origin}${location.pathname}';">Change streamer</button>
+					`;
 					content.appendChild(d);
 					main();
 				};
