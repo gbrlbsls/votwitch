@@ -21,7 +21,7 @@
 					<div class="form-group">
 						<input class='form-control' id="cid" name="channel" placeholder="twitch.tv/">
 					</div>
-					<button id="submitButton" type="submit" class="w-100 btn btn-primary">Ver votação</button>
+					<button id="submitButton" type="submit" class="w-100 btn btn-primary">See votes</button>
 				</form>
 			</div>
 		</div>
@@ -43,7 +43,7 @@
 					
 					let d = document.createElement('div');
 					d.className = 'ml-5';
-					d.innerHTML = `<p class="text-primary"><a href="//twitch.tv/${channel}">twitch.tv/${channel}</a></p><br><button class="btn btn-primary" onclick="resetVotes();">Reset</button>`;
+					d.innerHTML = `<p class="text-primary"><a href="//twitch.tv/${channel}">twitch.tv/${channel}</a></p><br><button class="btn btn-primary" onclick="resetVotes();">Reset</button><br><a class="btn btn-primary" href="${location.origin}${location.pathname}">Change streamer</a>`;
 					content.appendChild(d);
 					main();
 				};
