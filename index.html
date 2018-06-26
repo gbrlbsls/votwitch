@@ -28,6 +28,10 @@
 		
 		<script>
 					
+			const oauth = findHashParameter('access_token');
+			if(oauth == null){
+				window.location = "https://id.twitch.tv/oauth2/authorize?client_id=lfdbify51yccofif9tc8hxqtjqz6sv&redirect_uri=https://gbsales.github.io/votwitch/&response_type=token&scope=chat_login";
+			}
 			document.getElementById("submitButton").addEventListener("click", (event)=>{
 				event.preventDefault();
 				
@@ -73,7 +77,6 @@
 			}
 			
 			function main() {
-				const oauth = findHashParameter('access_token');
 				TAPIC.setup(oauth, (username)=>{
 					TAPIC.joinChannel(channel);
 				});
