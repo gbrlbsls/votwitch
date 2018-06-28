@@ -142,4 +142,5 @@ function changeStreamer() {
 	
 	client.disconnect();
 	tjsOptions.channels = [];
+	resetVotes();
 };
