@@ -1,5 +1,3 @@
-const SESSION_KEY = 'twitch_session_token';
-
 const TwitchJS = window.TwitchJS;
 
 var client = null;
@@ -21,37 +19,18 @@ var tjsOptions = {
   channels: []
 }
 var Data = {
-	Channel: null,
 	Votes: [],
 	Watching: false,
 };
 
-const Config = {
-	ClientId: "4v9c64kznza6sje7bpb7xnizm628ww",
-	RedirectUrl: "http://localhost/gbstest/oauth_redirect.html",
-	Scope: "chat_login",
-};
-
-function setToken(token) {	
-	window.sessionStorage.setItem(SESSION_KEY, token);
-}
-
-function getToken() {
-	return window.sessionStorage.getItem(SESSION_KEY);
-}
-
-function setChannel(name) {
-	Data.Channel = name;
-}
-
 function getChannel() {
-	return Data.Channel;
+	var r = tjsOptions.channels[0]; 
+	
+	return r;
 }
 
 $(document).ready(()=> {
-	
-	$("#seeVotes").hide();
-	
+		
 	getChampionList().forEach((champion, i)=>{
 		Data.Votes[i] = [champion, 0];
 	});
@@ -60,21 +39,11 @@ $(document).ready(()=> {
 	$("#submitButton").click((e) => {
 		e.preventDefault();
 		
-		setChannel($("#cid").val());
-		if(getChannel() != "") {
+		let cid = $("#cid").val();
+		if(cid != "") {
+			tjsOptions.channels.push(cid);
 			$("#requestForm").hide();
-			
-			/*
-			if(getToken() == null){
-				window.open(`https://id.twitch.tv/oauth2/authorize?client_id=${Config.ClientId}&redirect_uri=${Config.RedirectUrl}&response_type=token&scope=${Config.Scope}`,
-				"",
-				"titlebar=no,statusbar=no,width=320,height=240");
-				$("#content").append("<p id='wlabel'>Waiting authorization...</p>");
-			}else{
-				
-			}
-			*/
-			
+						
 			main();
 				
 		};
@@ -87,10 +56,15 @@ $(document).ready(()=> {
 	client.on('message', (channel, userstate, message, self)=>{
 		var champ = getChampion(message);
 		if(champ != null){
-			console.log(champ);
 			addVote(champ);
 		}
 	});
+	
+	let channel = findGetParameter("channel")
+	if(channel != null){
+		$("#cid").val(channel);
+		$("#submitButton").click();
+	};
 });
 
 function addVote(champion) {
@@ -116,21 +90,15 @@ function main() {
 	$("#seeVotes").show();
 	$("#wlabel").remove();
 
-	tjsOptions.channels.push(`#${getChannel()}`);	
 	client.connect();	
-/*	
-	TAPIC.setup(getToken(), (username)=>{
-		TAPIC.joinChannel(getChannel());
-	});
 	
+	let link = document.createElement("a");
 	
-	TAPIC.listen('message', (e) => {
-		var champ = getChampion(e.text);
-		if(champ != null){
-			addVote(champ);
-		}
-	});
-*/
+	link.text = "twitch.tv/" + getChannel();
+	link.href = "//" + link.text;
+	
+	$("#twitchLink").append(link);
+
 	Data.Watching = true;
 };
 
