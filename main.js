@@ -97,6 +97,7 @@ function main() {
 	link.text = "twitch.tv/" + getChannel();
 	link.href = "//" + link.text;
 	
+	$("#twitchLink").empty();
 	$("#twitchLink").append(link);
 
 	Data.Watching = true;
