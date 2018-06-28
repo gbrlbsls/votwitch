@@ -141,4 +141,5 @@ function changeStreamer() {
 	Data.Watching = false;
 	
 	client.disconnect();
+	tjsOptions.channels = [];
 };
