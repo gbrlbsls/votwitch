@@ -4,6 +4,7 @@ var client = null;
 
 var tjsOptions = {
   options: {
+	clientId: 'lfdbify51yccofif9tc8hxqtjqz6sv',
     // Debugging information will be outputted to the console.
     debug: false
   },
@@ -23,12 +24,6 @@ var Data = {
 	Watching: false,
 };
 
-function getChannel() {
-	var r = tjsOptions.channels[0]; 
-	
-	return r;
-}
-
 $(document).ready(()=> {
 		
 	getChampionList().forEach((champion, i)=>{
@@ -43,8 +38,11 @@ $(document).ready(()=> {
 		if(cid != "") {
 			tjsOptions.channels.push(cid);
 			$("#requestForm").hide();
-						
-			main();
+		
+				$("#seeVotes").show();
+				$("#wlabel").remove();
+				client.connect();	
+				client.on('connected', main);
 				
 		};
 	});	
@@ -67,6 +65,10 @@ $(document).ready(()=> {
 	};
 });
 
+function getChannel() {
+	return tjsOptions.channels[0];
+}
+
 function addVote(champion) {
 	Data.Votes.forEach((v, i)=> {
 		if(v[0] == champion){
@@ -84,23 +86,27 @@ function resetVotes() {
 	Data.Votes.forEach((v, i)=> {
 		Data.Votes[i][1] = 0;
 	});	
+	render();
 }
 
-function main() {		
-	$("#seeVotes").show();
-	$("#wlabel").remove();
-
-	client.connect();	
+function main(address, port) {		
 	
+
 	let link = document.createElement("a");
 	
-	link.text = "twitch.tv/" + getChannel();
+	let name = getChannel();
+	
+	link.text = "twitch.tv/" + name;
 	link.href = "//" + link.text;
 	
 	$("#twitchLink").empty();
 	$("#twitchLink").append(link);
 
+	$.get( `https://api.twitch.tv/kraken/channels/${name}?client_id=lfdbify51yccofif9tc8hxqtjqz6sv`, function( data ) {
+		$("#twitchLogo").attr("src", data.logo);
+	});
 	Data.Watching = true;
+	
 };
 
 function render() {
